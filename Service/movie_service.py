@@ -17,4 +17,3 @@ class MovieService:
 
     def get_movies(self):
         return self.movie_repo.get_movies()
-

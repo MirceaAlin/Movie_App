@@ -23,6 +23,7 @@ class Console:
               "6. Modificare client\n"
               "7. Afisare filme\n"
               "8. Afisare clienti\n"
+              "9.Verifica daca doi clienti au acelasi CNP\n"
               "0. Exit")
 
     def run(self):
@@ -46,6 +47,8 @@ class Console:
                 self.ui_afisare_filme()
             elif choice == "8":
                 self.ui_afisare_clienti()
+            elif choice == "9":
+                self.ui_verificare_clienti_cnp()
             elif choice == "0":
                 break
             else:
@@ -147,8 +150,8 @@ class Console:
                 print("Eroare: Nu exista un client cu acest ID.")
                 return
 
-            nume = input("Introduceti noul nume al clientului (sau lasati gol pentru a nu-l schimba): ")
-            cnp = input("Introduceti noul cnp al clientului (sau lasati gol pentru a nu-l schimba): ")
+            nume = input("Introduceti noul nume al clientului: ")
+            cnp = input("Introduceti noul cnp al clientului: ")
             self.client_service.modificare_client(client_id, nume if nume else None, cnp if cnp else None)
             print("Client actualizat cu succes!")
         except ValueError:
@@ -184,6 +187,33 @@ class Console:
                     print(f"cnp client: {client.get_cnp()}")
         except Exception as e:
             print(f"Eroare la afisarea clientilor: {e}")
+
+    def ui_verificare_clienti_cnp(self):
+        try:
+            clienti = self.client_service.get_clienti()
+            if len(clienti) < 2:
+                print("Nu există suficienți clienți pentru a realiza verificarea.")
+                return
+
+            client_id1 = int(input("Introduceți ID-ul primului client: "))
+            client_id2 = int(input("Introduceți ID-ul celui de-al doilea client: "))
+
+            client1 = next((client for client in clienti if client.get_id() == client_id1), None)
+            client2 = next((client for client in clienti if client.get_id() == client_id2), None)
+
+            if not client1 or not client2:
+                print("Eroare: Unul sau ambii clienți nu există.")
+                return
+
+            if client1 == client2:
+                print("Clienții sunt egali.")
+            else:
+                print("Clienții nu sunt egali.")
+        except ValueError:
+            print("Eroare: ID-urile trebuie să fie numere întregi.")
+        except Exception as e:
+            print(f"Eroare la verificarea clienților: {e}")
+
 
 if __name__ == "__main__":
     console = Console()

@@ -47,4 +47,3 @@ class ClientRepo:
                 if cnp is not None:
                     client.set_cnp(cnp)
                 break
-

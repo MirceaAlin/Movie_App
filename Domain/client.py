@@ -24,3 +24,13 @@ class Client:
 
     def __str__(self):
         return f"{self.__client_id} {self.__nume} {self.__cnp}"
+
+    # Operatorul == (doi clienti sunt egali daca au acelasi cnp)
+    def __eq__(self, other):
+        if isinstance(other, Client):
+            return self.__cnp == other.__cnp
+        return False
+
+    # Operatorul !=
+    def __ne__(self, other):
+        return not self.__eq__(other)
