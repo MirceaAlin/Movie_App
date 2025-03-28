@@ -33,37 +33,19 @@ def test_client():
     assert client.get_cnp() == 6050501543566
 
 
-def test_add_operator():
-    movie1 = Movie(1, "Film A", "Descriere A", "Acțiune")
-    movie2 = Movie(2, "Film B", "Descriere B", "Acțiune")
-    movie3 = Movie(3, "Film C", "Descriere C", "Comedie")
-    combined_movie = movie1 + movie2
-    assert combined_movie.get_titlu() == "Film A & Film B"
-    assert combined_movie.get_descriere() == "Descriere A Descriere B"
-    try:
-        movie1 + movie3
-        assert False, "Nu s-a generat eroarea așteptată"
-    except ValueError:
-        pass
-
-
-def test_iadd_operator():
-    movie1 = Movie(1, "Film A", "Descriere A", "Acțiune")
-    movie2 = Movie(2, "Film B", "Descriere B", "Acțiune")
-    movie3 = Movie(3, "Film C", "Descriere C", "Comedie")
-    movie1 += movie2
-    assert movie1.get_titlu() == "Film A & Film B"
-    assert movie1.get_descriere() == "Descriere A Descriere B"
-    try:
-        movie1 += movie3
-        assert False, "Nu s-a generat eroarea așteptată"
-    except ValueError:
-        pass
+def test_operator_mod():
+    movie1 = Movie(1, "Film1", "Descriere1", "Drama")
+    movie2 = Movie(2, "Film2", "Descriere2", "Documentar")
+    movie3 = Movie(3, "Film3", "Descriere3", "Comedie")
+    movie4 = Movie(4, "Film4", "Descriere4", "Drama")
+    assert movie1 % movie2 == True
+    assert movie1 % movie4 == True
+    assert movie1 % movie3 == False
+    assert movie2 % movie3 == False
 
 
 if __name__ == '__main__':
     test_client()
     test_movie()
-    test_iadd_operator()
-    test_add_operator()
+    test_operator_mod()
     print("Teste trecute cu succes!")

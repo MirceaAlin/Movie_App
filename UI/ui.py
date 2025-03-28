@@ -23,8 +23,7 @@ class Console:
               "6. Modificare client\n"
               "7. Afisare filme\n"
               "8. Afisare clienti\n"
-              "9. Combinare filme\n"
-              "10. Combinare filme prin modificare\n"
+              "9. Verificare genuri filme\n"
               "0. Exit")
 
     def run(self):
@@ -49,9 +48,7 @@ class Console:
             elif choice == "8":
                 self.ui_afisare_clienti()
             elif choice == "9":
-                self.ui_combinare_filme()
-            elif choice == "10":
-                self.ui_combinare_filme_modificare()
+                self.ui_verificare_genuri()
             elif choice == "0":
                 break
             else:
@@ -191,49 +188,28 @@ class Console:
         except Exception as e:
             print(f"Eroare la afisarea clientilor: {e}")
 
-    def ui_combinare_filme(self):
+    def ui_verificare_genuri(self):
         try:
-            movie_id_1 = int(input("Introduceti id-ul primului film: "))
-            movie_id_2 = int(input("Introduceti id-ul celui de-al doilea film: "))
-
             filme = self.movie_service.get_movies()
-            movie1 = next((movie for movie in filme if movie.get_id() == movie_id_1), None)
-            movie2 = next((movie for movie in filme if movie.get_id() == movie_id_2), None)
+            if len(filme) < 2:
+                print("Nu există suficiente filme pentru a efectua verificarea.")
+                return
+            id1 = int(input("Introduceți ID-ul primului film: "))
+            id2 = int(input("Introduceți ID-ul celui de-al doilea film: "))
+            movie1 = next((movie for movie in filme if movie.get_id() == id1), None)
+            movie2 = next((movie for movie in filme if movie.get_id() == id2), None)
             if not movie1 or not movie2:
-                print("Eroare: Filmele nu exista.")
+                print("Unul sau ambele ID-uri introduse nu corespund niciunui film.")
                 return
-            if movie1.get_gen() != movie2.get_gen():
-                print("Eroare: Filmele trebuie sa aiba acelasi gen pentru a fi combinate.")
-                return
-            combined_movie = movie1 + movie2
-            print(f"Filmul combinat: {combined_movie.get_titlu()} - {combined_movie.get_descriere()}")
-            self.movie_service.adaugare_movie(combined_movie)
-            print("Filmul combinat a fost adaugat cu succes!")
-        except ValueError:
-            print("Eroare: ID-ul filmului trebuie sa fie un numar intreg.")
-        except Exception as e:
-            print(f"Eroare la combinarea filmelor: {e}")
+            if movie1 % movie2:
+                print(f"Genurile filmelor '{movie1.get_titlu()}' și '{movie2.get_titlu()}' încep cu aceeași literă.")
+            else:
+                print(f"Genurile filmelor '{movie1.get_titlu()}' și '{movie2.get_titlu()}' NU încep cu aceeași literă.")
 
-    def ui_combinare_filme_modificare(self):
-        try:
-            movie_id_1 = int(input("Introduceti id-ul primului film: "))
-            movie_id_2 = int(input("Introduceti id-ul celui de-al doilea film: "))
-            filme = self.movie_service.get_movies()
-            movie1 = next((movie for movie in filme if movie.get_id() == movie_id_1), None)
-            movie2 = next((movie for movie in filme if movie.get_id() == movie_id_2), None)
-            if not movie1 or not movie2:
-                print("Eroare: Filmele nu exista.")
-                return
-            if movie1.get_gen() != movie2.get_gen():
-                print("Eroare: Filmele trebuie sa aiba acelasi gen pentru a fi combinate.")
-                return
-            movie1 += movie2
-            print(f"Film actualizat: {movie1.get_titlu()} - {movie1.get_descriere()}")
-            print("Filmul a fost actualizat cu succes!")
         except ValueError:
-            print("Eroare: ID-ul filmului trebuie sa fie un numar intreg.")
+            print("Eroare: ID-urile trebuie să fie numere întregi.")
         except Exception as e:
-            print(f"Eroare la combinarea filmelor: {e}")
+            print(f"Eroare la verificarea genurilor: {e}")
 
 
 if __name__ == "__main__":
