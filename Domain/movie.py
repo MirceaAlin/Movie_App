@@ -31,10 +31,3 @@ class Movie:
 
     def __str__(self):
         return f"{self.__movie_id} {self.__titlu} {self.__descriere} {self.__gen}"
-
-#verifica daca doua filme au genuri care incep cu aceeasi litera
-    def __mod__(self, other):
-        if isinstance(other, Movie):
-            return self.__gen[0].lower() == other.__gen[0].lower()
-        raise TypeError("Operatorul se aplică doar între două filme.")
-

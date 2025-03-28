@@ -23,7 +23,7 @@ class Console:
               "6. Modificare client\n"
               "7. Afisare filme\n"
               "8. Afisare clienti\n"
-              "9. Verificare genuri filme\n"
+              "9. Comparare clienti\n"
               "0. Exit")
 
     def run(self):
@@ -48,7 +48,7 @@ class Console:
             elif choice == "8":
                 self.ui_afisare_clienti()
             elif choice == "9":
-                self.ui_verificare_genuri()
+                self.ui_comparare_clienti()
             elif choice == "0":
                 break
             else:
@@ -188,28 +188,43 @@ class Console:
         except Exception as e:
             print(f"Eroare la afisarea clientilor: {e}")
 
-    def ui_verificare_genuri(self):
-        try:
-            filme = self.movie_service.get_movies()
-            if len(filme) < 2:
-                print("Nu există suficiente filme pentru a efectua verificarea.")
-                return
-            id1 = int(input("Introduceți ID-ul primului film: "))
-            id2 = int(input("Introduceți ID-ul celui de-al doilea film: "))
-            movie1 = next((movie for movie in filme if movie.get_id() == id1), None)
-            movie2 = next((movie for movie in filme if movie.get_id() == id2), None)
-            if not movie1 or not movie2:
-                print("Unul sau ambele ID-uri introduse nu corespund niciunui film.")
-                return
-            if movie1 % movie2:
-                print(f"Genurile filmelor '{movie1.get_titlu()}' și '{movie2.get_titlu()}' încep cu aceeași literă.")
-            else:
-                print(f"Genurile filmelor '{movie1.get_titlu()}' și '{movie2.get_titlu()}' NU încep cu aceeași literă.")
+    def cauta_client_dupa_id(self, client_id):
+        for client in self.client_service.get_clienti():
+            if client.get_id() == client_id:
+                return client
+        return None
 
+    def ui_comparare_clienti(self):
+        try:
+            client_id_1 = int(input("Introduceti ID-ul primului client: "))
+            client_id_2 = int(input("Introduceti ID-ul celui de-al doilea client: "))
+
+            client1 = self.cauta_client_dupa_id(client_id_1)
+            client2 = self.cauta_client_dupa_id(client_id_2)
+
+            if client1 is None:
+                print(f"Eroare: Nu exista un client cu ID-ul {client_id_1}.")
+                return
+            if client2 is None:
+                print(f"Eroare: Nu exista un client cu ID-ul {client_id_2}.")
+                return
+
+            cnp1 = client1.get_cnp()
+            cnp2 = client2.get_cnp()
+
+            # print(f"Client 1: {client1.get_nume()} (CNP: {cnp1})")
+            # print(f"Client 2: {client2.get_nume()} (CNP: {cnp2})")
+
+            if cnp1 < cnp2:
+                print(f"{client1.get_nume()} este mai in varsta decat {client2.get_nume()}.")
+            elif cnp1 > cnp2:
+                print(f"{client2.get_nume()} este mai in varsta decat {client1.get_nume()}.")
+            else:
+                print(f"Ambii clienti au acelasi CNP, deci sunt de aceeasi varsta.")
         except ValueError:
-            print("Eroare: ID-urile trebuie să fie numere întregi.")
+            print("Eroare: ID-ul clientului trebuie sa fie un numar intreg.")
         except Exception as e:
-            print(f"Eroare la verificarea genurilor: {e}")
+            print(f"Eroare la compararea varstei clientilor: {e}")
 
 
 if __name__ == "__main__":
