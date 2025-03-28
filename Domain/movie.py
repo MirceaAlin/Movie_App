@@ -31,3 +31,23 @@ class Movie:
 
     def __str__(self):
         return f"{self.__movie_id} {self.__titlu} {self.__descriere} {self.__gen}"
+
+# ( + ) pentru filmele cu același gen
+    def __add__(self, other):
+        if isinstance(other, Movie):
+            if self.__gen == other.__gen:
+                new_titlu = self.__titlu + " & " + other.__titlu
+                new_descriere = self.__descriere + " " + other.__descriere
+                return Movie(0, new_titlu, new_descriere, self.__gen)
+            else:
+                raise ValueError("Filmele trebuie să aibă același gen pentru a fi combinate.")
+
+# ( += )
+    def __iadd__(self, other):
+        if isinstance(other, Movie):
+            if self.__gen == other.__gen:
+                self.__titlu += " & " + other.__titlu
+                self.__descriere += " " + other.__descriere
+                return self
+            else:
+                raise ValueError("Filmele trebuie să aibă același gen pentru a putea fi combinate.")

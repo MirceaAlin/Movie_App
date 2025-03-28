@@ -17,3 +17,4 @@ class ClientService:
 
     def modificare_client(self, client_id, nume=None, cnp=None):
         self.client_repo.modificare_client(client_id, nume, cnp)
+

@@ -23,7 +23,8 @@ class Console:
               "6. Modificare client\n"
               "7. Afisare filme\n"
               "8. Afisare clienti\n"
-              "9.Verifica daca doi clienti au acelasi CNP\n"
+              "9. Combinare filme\n"
+              "10. Combinare filme prin modificare\n"
               "0. Exit")
 
     def run(self):
@@ -48,7 +49,9 @@ class Console:
             elif choice == "8":
                 self.ui_afisare_clienti()
             elif choice == "9":
-                self.ui_verificare_clienti_cnp()
+                self.ui_combinare_filme()
+            elif choice == "10":
+                self.ui_combinare_filme_modificare()
             elif choice == "0":
                 break
             else:
@@ -150,8 +153,8 @@ class Console:
                 print("Eroare: Nu exista un client cu acest ID.")
                 return
 
-            nume = input("Introduceti noul nume al clientului: ")
-            cnp = input("Introduceti noul cnp al clientului: ")
+            nume = input("Introduceti noul nume al clientului (sau lasati gol pentru a nu-l schimba): ")
+            cnp = input("Introduceti noul cnp al clientului (sau lasati gol pentru a nu-l schimba): ")
             self.client_service.modificare_client(client_id, nume if nume else None, cnp if cnp else None)
             print("Client actualizat cu succes!")
         except ValueError:
@@ -188,31 +191,49 @@ class Console:
         except Exception as e:
             print(f"Eroare la afisarea clientilor: {e}")
 
-    def ui_verificare_clienti_cnp(self):
+    def ui_combinare_filme(self):
         try:
-            clienti = self.client_service.get_clienti()
-            if len(clienti) < 2:
-                print("Nu există suficienți clienți pentru a realiza verificarea.")
+            movie_id_1 = int(input("Introduceti id-ul primului film: "))
+            movie_id_2 = int(input("Introduceti id-ul celui de-al doilea film: "))
+
+            filme = self.movie_service.get_movies()
+            movie1 = next((movie for movie in filme if movie.get_id() == movie_id_1), None)
+            movie2 = next((movie for movie in filme if movie.get_id() == movie_id_2), None)
+            if not movie1 or not movie2:
+                print("Eroare: Filmele nu exista.")
                 return
-
-            client_id1 = int(input("Introduceți ID-ul primului client: "))
-            client_id2 = int(input("Introduceți ID-ul celui de-al doilea client: "))
-
-            client1 = next((client for client in clienti if client.get_id() == client_id1), None)
-            client2 = next((client for client in clienti if client.get_id() == client_id2), None)
-
-            if not client1 or not client2:
-                print("Eroare: Unul sau ambii clienți nu există.")
+            if movie1.get_gen() != movie2.get_gen():
+                print("Eroare: Filmele trebuie sa aiba acelasi gen pentru a fi combinate.")
                 return
-
-            if client1 == client2:
-                print("Clienții sunt egali.")
-            else:
-                print("Clienții nu sunt egali.")
+            combined_movie = movie1 + movie2
+            print(f"Filmul combinat: {combined_movie.get_titlu()} - {combined_movie.get_descriere()}")
+            self.movie_service.adaugare_movie(combined_movie)
+            print("Filmul combinat a fost adaugat cu succes!")
         except ValueError:
-            print("Eroare: ID-urile trebuie să fie numere întregi.")
+            print("Eroare: ID-ul filmului trebuie sa fie un numar intreg.")
         except Exception as e:
-            print(f"Eroare la verificarea clienților: {e}")
+            print(f"Eroare la combinarea filmelor: {e}")
+
+    def ui_combinare_filme_modificare(self):
+        try:
+            movie_id_1 = int(input("Introduceti id-ul primului film: "))
+            movie_id_2 = int(input("Introduceti id-ul celui de-al doilea film: "))
+            filme = self.movie_service.get_movies()
+            movie1 = next((movie for movie in filme if movie.get_id() == movie_id_1), None)
+            movie2 = next((movie for movie in filme if movie.get_id() == movie_id_2), None)
+            if not movie1 or not movie2:
+                print("Eroare: Filmele nu exista.")
+                return
+            if movie1.get_gen() != movie2.get_gen():
+                print("Eroare: Filmele trebuie sa aiba acelasi gen pentru a fi combinate.")
+                return
+            movie1 += movie2
+            print(f"Film actualizat: {movie1.get_titlu()} - {movie1.get_descriere()}")
+            print("Filmul a fost actualizat cu succes!")
+        except ValueError:
+            print("Eroare: ID-ul filmului trebuie sa fie un numar intreg.")
+        except Exception as e:
+            print(f"Eroare la combinarea filmelor: {e}")
 
 
 if __name__ == "__main__":

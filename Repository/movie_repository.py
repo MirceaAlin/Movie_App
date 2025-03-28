@@ -50,3 +50,4 @@ class MovieRepo:
                 if gen is not None:
                     movie.set_gen(gen)
                 break
+
