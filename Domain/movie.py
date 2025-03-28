@@ -31,3 +31,15 @@ class Movie:
 
     def __str__(self):
         return f"{self.__movie_id} {self.__titlu} {self.__descriere} {self.__gen}"
+
+    # ( <= ) pe baza ID-ului, filmul cu id-ul mai mic este mai vechi
+    def __le__(self, other):
+        if isinstance(other, Movie):
+            return self.__movie_id <= other.__movie_id
+        raise TypeError("Nu se poate face comparatia!")
+
+    # ( >= )pe baza ID-ului, filmul cu id-ul mai mare este mai nou
+    def __ge__(self, other):
+        if isinstance(other, Movie):
+            return self.__movie_id >= other.__movie_id
+        raise TypeError("Nu se poate face comparatia!")

@@ -23,7 +23,8 @@ class Console:
               "6. Modificare client\n"
               "7. Afisare filme\n"
               "8. Afisare clienti\n"
-              "9. Comparare clienti\n"
+              "9. Comparare vechime filme\n"
+              "10. Comparare noutate filme\n"
               "0. Exit")
 
     def run(self):
@@ -48,7 +49,9 @@ class Console:
             elif choice == "8":
                 self.ui_afisare_clienti()
             elif choice == "9":
-                self.ui_comparare_clienti()
+                self.ui_compara_vechime_filme()
+            elif choice == "10":
+                self.ui_compara_noutate_filme()
             elif choice == "0":
                 break
             else:
@@ -188,43 +191,49 @@ class Console:
         except Exception as e:
             print(f"Eroare la afisarea clientilor: {e}")
 
-    def cauta_client_dupa_id(self, client_id):
-        for client in self.client_service.get_clienti():
-            if client.get_id() == client_id:
-                return client
-        return None
-
-    def ui_comparare_clienti(self):
+    def ui_compara_vechime_filme(self):
         try:
-            client_id_1 = int(input("Introduceti ID-ul primului client: "))
-            client_id_2 = int(input("Introduceti ID-ul celui de-al doilea client: "))
-
-            client1 = self.cauta_client_dupa_id(client_id_1)
-            client2 = self.cauta_client_dupa_id(client_id_2)
-
-            if client1 is None:
-                print(f"Eroare: Nu exista un client cu ID-ul {client_id_1}.")
+            movie_id_1 = int(input("Introduceti ID-ul primului film: "))
+            movie_id_2 = int(input("Introduceti ID-ul celui de-al doilea film: "))
+            filme = self.movie_service.get_movies()
+            movie1 = next((movie for movie in filme if movie.get_id() == movie_id_1), None)
+            movie2 = next((movie for movie in filme if movie.get_id() == movie_id_2), None)
+            if movie1 is None:
+                print(f"Eroare: Nu exista un film cu ID-ul {movie_id_1}.")
                 return
-            if client2 is None:
-                print(f"Eroare: Nu exista un client cu ID-ul {client_id_2}.")
+            if movie2 is None:
+                print(f"Eroare: Nu exista un film cu ID-ul {movie_id_2}.")
                 return
-
-            cnp1 = client1.get_cnp()
-            cnp2 = client2.get_cnp()
-
-            # print(f"Client 1: {client1.get_nume()} (CNP: {cnp1})")
-            # print(f"Client 2: {client2.get_nume()} (CNP: {cnp2})")
-
-            if cnp1 < cnp2:
-                print(f"{client1.get_nume()} este mai in varsta decat {client2.get_nume()}.")
-            elif cnp1 > cnp2:
-                print(f"{client2.get_nume()} este mai in varsta decat {client1.get_nume()}.")
+            if movie1 <= movie2:
+                print(f"'{movie1.get_titlu()}' este mai vechi sau la fel de vechi ca '{movie2.get_titlu()}'.")
             else:
-                print(f"Ambii clienti au acelasi CNP, deci sunt de aceeasi varsta.")
+                print(f"'{movie1.get_titlu()}' NU este mai vechi sau la fel de vechi ca '{movie2.get_titlu()}'.")
         except ValueError:
-            print("Eroare: ID-ul clientului trebuie sa fie un numar intreg.")
+            print("Eroare: ID-urile filmelor trebuie sa fie numere intregi.")
         except Exception as e:
-            print(f"Eroare la compararea varstei clientilor: {e}")
+            print(f"Eroare la compararea filmelor: {e}")
+
+    def ui_compara_noutate_filme(self):
+        try:
+            movie_id_1 = int(input("Introduceti ID-ul primului film: "))
+            movie_id_2 = int(input("Introduceti ID-ul celui de-al doilea film: "))
+            filme = self.movie_service.get_movies()
+            movie1 = next((movie for movie in filme if movie.get_id() == movie_id_1), None)
+            movie2 = next((movie for movie in filme if movie.get_id() == movie_id_2), None)
+            if movie1 is None:
+                print(f"Eroare: Nu exista un film cu ID-ul {movie_id_1}.")
+                return
+            if movie2 is None:
+                print(f"Eroare: Nu exista un film cu ID-ul {movie_id_2}.")
+                return
+            if movie1 >= movie2:
+                print(f"'{movie1.get_titlu()}' este mai nou sau la fel de nou ca '{movie2.get_titlu()}'.")
+            else:
+                print(f"'{movie1.get_titlu()}' NU este mai nou sau la fel de nou ca '{movie2.get_titlu()}'.")
+        except ValueError:
+            print("Eroare: ID-urile filmelor trebuie sa fie numere intregi.")
+        except Exception as e:
+            print(f"Eroare la compararea filmelor: {e}")
 
 
 if __name__ == "__main__":

@@ -33,33 +33,29 @@ def test_client():
     assert client.get_cnp() == 6050501543566
 
 
-def teste_operator_lt():
-    client1 = Client(1, "Ion", 1900101123456)
-    client2 = Client(2, "Maria", 2000101123456)
-    client3 = Client(3, "Vasile", 1900101123456)
-    client4 = Client(4, "Elena", 2000201123456)
+def test_movie_operator_le():
+    movie1 = Movie(1, "Titanic", "O poveste dramatica", "Drama")
+    movie2 = Movie(2, "Avatar", "Un univers spectaculos", "SF")
+    movie3 = Movie(1, "Titanic (alt)", "Altă descriere", "Drama")
 
-    assert client1 < client2
-    assert not (client2 < client1)
-    assert not (client1 < client3)
-    assert client2 < client4
+    assert movie1 <= movie2
+    assert movie1 <= movie3
+    assert not (movie2 <= movie1)
 
 
-def teste_operator_gt():
-    client1 = Client(1, "Ion", 1900101123456)
-    client2 = Client(2, "Maria", 2000101123456)
-    client3 = Client(3, "Vasile", 1900101123456)
-    client4 = Client(4, "Elena", 2000201123456)
+def test_movie_operator_ge():
+    movie1 = Movie(1, "Titanic", "O poveste dramatica", "Drama")
+    movie2 = Movie(2, "Avatar", "Un univers spectaculos", "SF")
+    movie3 = Movie(1, "Titanic (alt)", "Altă descriere", "Drama")
 
-    assert client2 > client1
-    assert not (client1 > client2)
-    assert not (client1 > client3)
-    assert client4 > client2
+    assert movie2 >= movie1
+    assert movie3 >= movie1
+    assert not (movie1 >= movie2)
 
 
 if __name__ == '__main__':
     test_client()
     test_movie()
-    teste_operator_lt()
-    teste_operator_gt()
+    test_movie_operator_le()
+    test_movie_operator_ge()
     print("Teste trecute cu succes!")
